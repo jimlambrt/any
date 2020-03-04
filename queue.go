@@ -55,7 +55,7 @@ func (r *Queue) Add(things ...interface{}) error {
 			return err
 		}
 		if n != len(data) {
-			panic(fmt.Sprintf("%d / %d", n, len(data)))
+			return fmt.Errorf("failed to write the all the data to the buffer: %d of %d", n, len(data))
 		}
 	}
 	return nil
