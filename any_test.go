@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	proto "github.com/golang/protobuf/proto"
+	"github.com/jimlambrt/any/any_test"
 	"github.com/matryer/is"
 )
 
@@ -40,27 +41,27 @@ func Test_Queue(t *testing.T) {
 	t.Parallel()
 	is := is.New(t)
 	types, err := NewTypeCatalog(
-		new(TestUser),
-		new(TestCar),
-		new(TestRental),
+		new(any_test.TestUser),
+		new(any_test.TestCar),
+		new(any_test.TestRental),
 		new(TestShirt),
 		new(TestPants),
 	)
 	is.NoErr(err)
 	queue := Queue{Catalog: types}
 
-	user := TestUser{
+	user := any_test.TestUser{
 		Id:          1,
 		Name:        "Alice",
 		PhoneNumber: "867-5309",
 		Email:       "alice@bob.com",
 	}
-	car := TestCar{
+	car := any_test.TestCar{
 		Id:    2,
 		Model: "Jeep",
 		Mpg:   25,
 	}
-	rental := TestRental{
+	rental := any_test.TestRental{
 		UserId: 1,
 		CarId:  2,
 	}
@@ -94,19 +95,19 @@ func Test_Queue(t *testing.T) {
 	is.NoErr(err)
 	origUser, err := comparable(&user)
 	is.NoErr(err)
-	is.True(reflect.DeepEqual(*origUser.(*TestUser), *queuedUser.(*TestUser)))
+	is.True(reflect.DeepEqual(*origUser.(*any_test.TestUser), *queuedUser.(*any_test.TestUser)))
 
 	queuedCar, err := queue.Remove()
 	is.NoErr(err)
 	origCar, err := comparable(&car)
 	is.NoErr(err)
-	is.True(reflect.DeepEqual(*origCar.(*TestCar), *queuedCar.(*TestCar)))
+	is.True(reflect.DeepEqual(*origCar.(*any_test.TestCar), *queuedCar.(*any_test.TestCar)))
 
 	queuedRental, err := queue.Remove()
 	is.NoErr(err)
 	origRental, err := comparable(&rental)
 	is.NoErr(err)
-	is.True(reflect.DeepEqual(*origRental.(*TestRental), *queuedRental.(*TestRental)))
+	is.True(reflect.DeepEqual(*origRental.(*any_test.TestRental), *queuedRental.(*any_test.TestRental)))
 
 	queuedShirt, err := queue.Remove()
 	is.NoErr(err)

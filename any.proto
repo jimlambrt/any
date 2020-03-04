@@ -9,21 +9,3 @@ message Any {
   bool is_pb = 3;
   google.protobuf.Any anything = 4;
 }
-
-message TestUser {
-  uint32 id = 1;
-  string name = 2;
-  string phone_number = 3;
-  string email = 4;
-}
-
-message TestCar {
-  uint32 id = 1;
-  string model = 2;
-  int32 mpg = 3;
-}
-
-message TestRental {
-  uint32 user_id = 1;
-  uint32 car_id = 2;
-}
