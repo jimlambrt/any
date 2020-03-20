@@ -32,3 +32,4 @@ queuedUser, err := queue.Remove()
 ## Why?
 
 Sometimes it's nice to be able to serialize anything into a queue that's buffered by a `[]byte` 
+

@@ -5,17 +5,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"sync"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes/any"
 )
 
+// Queue provides a FIFO queue which is concurrent safe
 type Queue struct {
+	// QueueBuffer provides a buffer for the queue
 	QueueBuffer
+	// Catalog provides a catalog of types for the queue
 	Catalog *TypeCatalog
+	l       sync.Mutex
 }
 
-// Add pb message to queue
+// Add something to the queue
 func (r *Queue) Add(things ...interface{}) error {
 	for _, m := range things {
 		_, isProto := m.(proto.Message)
@@ -46,6 +51,8 @@ func (r *Queue) Add(things ...interface{}) error {
 		if err != nil {
 			return err
 		}
+		r.l.Lock()
+		defer r.l.Unlock()
 		err = binary.Write(r, binary.LittleEndian, int32(len(data)))
 		if err != nil {
 			return err
@@ -61,8 +68,10 @@ func (r *Queue) Add(things ...interface{}) error {
 	return nil
 }
 
-// Remove pb message from the queue and EOF if empty
+// Remove (FIFO) something from the queue and EOF if empty
 func (r *Queue) Remove() (interface{}, error) {
+	r.l.Lock()
+	defer r.l.Unlock()
 	var n int32
 	err := binary.Read(r, binary.LittleEndian, &n)
 	if err != nil {
